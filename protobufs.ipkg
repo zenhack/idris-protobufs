@@ -1,0 +1,5 @@
+package protobufs
+
+modules = BasicTypes
+	, Descriptor
+	, Plugin
