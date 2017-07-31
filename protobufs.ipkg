@@ -1,5 +1,8 @@
 package protobufs
 
+pkgs = contrib
+
 modules = BasicTypes
 	, Descriptor
 	, Plugin
+	, Decode
