@@ -9,24 +9,16 @@ record DecoderState where
 indexB64 : String -> Int -> Bits 64
 indexB64 s i = intToBits $ fromInteger $ cast $ ord $ strIndex s i
 
--- startDecode : String -> STrans m (dec : Var) [] (const [dec ::: State DecoderState])
 startDecode : String -> STrans m Var res (\lbl => (lbl ::: State DecoderState) :: res)
-startDecode buf = new $ MkDecoderState 0 buf -- byteIndex = 0, buffer = buf })
+startDecode buf = new $ MkDecoderState 0 buf
 
 decDropNone : Var -> Resources -> Maybe (Bits 64) -> Resources
 decDropNone _dec res Nothing = res
 decDropNone dec res (Just _) = (dec ::: State DecoderState) :: res
 
-{-
-MySt : Var -> Type
-MySt dec m res = STrans m ((dec ::: State DecoderState) :: res)
-                          (decDropNone dec res)
-                          -}
-
 getByte : (dec : Var) -> STrans m (Maybe (Bits 64))
     ((dec ::: State DecoderState) :: res)
     (decDropNone dec res)
--- getByte : (dec : Var) -> MySt dec
 getByte dec = do
     state <- read dec
     if length (buffer state) <= toNat (byteIndex state)
